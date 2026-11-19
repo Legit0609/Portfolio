@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Master's thesis: Land use and hydrological ecosystem services, Rio Pardo | Leon Haberberger</title>
+  <meta name="description" content="Seasonal Water Yield assessment of the Rio Pardo watershed (Minas Gerais, Brazil) with InVEST, QGIS, R and Google Earth Engine.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;600&display=swap">
+  <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <strong><a href="../../index.html" style="color:inherit;text-decoration:none">Leon Haberberger</a></strong>
+    <nav aria-label="Page sections">
+      <a href="#overview">Overview</a>
+      <a href="#contribution">Contribution</a>
+      <a href="#workflow">Workflow</a>
+      <a href="#results">Results</a>
+      <a href="#skills">Skills</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- Hero: Titel links, Studiengebiet-Karte rechts -->
+  <div class="hero">
+    <div>
+      <h1>Land use and hydrological ecosystem services in the Rio Pardo watershed</h1>
+      <p class="lead">A Seasonal Water Yield assessment for 2024 in northern Minas Gerais, Brazil. Master's thesis within the EcoSiPas project.</p>
+      <dl class="facts">
+        <div><dt>Study area</dt><dd>8,177 km²</dd></div>
+        <div><dt>Rainfall 2024 (long-term mean 804 mm)</dt><dd>1,092 mm</dd></div>
+        <div><dt>Local recharge if plantations were savanna</dt><dd>+110 mm/yr</dd></div>
+      </dl>
+    </div>
+    <figure>
+      <img src="../../assets/images/master-thesis/location_studyarea.png" alt="Digital elevation model of the Rio Pardo watershed with its location in Brazil">
+      <figcaption>Rio Pardo watershed, elevation 752 to 1,130 m (TOPODATA).</figcaption>
+    </figure>
+  </div>
+
+  <section id="overview">
+    <h2>Project overview</h2>
+    <div class="body">
+      <p>The Cerrado supplies much of Brazil's surface water, yet it is only weakly protected and is increasingly converted to eucalyptus plantations. This thesis models how land use and land cover relate to local recharge, baseflow and actual evapotranspiration in the Rio Pardo watershed.</p>
+      <ul>
+        <li>Institution: Hochschule Weihenstephan-Triesdorf, with the Forestry Department of the University of Brasília</li>
+        <li>Context: hydrological component of the EcoSiPas project (Ecosystem Services in Silvopastoral Systems)</li>
+        <li>Year modelled: 2024, a year with precipitation well above the long-term mean</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="question">
+    <h2>Research question and objective</h2>
+    <div class="body">
+      <p>Where do land-use classes coincide with low or high modelled water availability? The thesis tests whether pixels under eucalyptus plantation differ systematically in local recharge from natural vegetation classes.</p>
+      <p>The objective is a transferable workflow that identifies hydrologically sensitive areas and supports land-use planning in Cerrado watersheds.</p>
+    </div>
+  </section>
+
+  <section id="contribution">
+    <h2>My contribution</h2>
+    <div class="body">
+      <ul>
+        <li>Prepared the climate inputs in Google Earth Engine: monthly CHIRPS precipitation, CGIAR reference evapotranspiration and a monthly rain-event table.</li>
+        <li>Set up and ran the InVEST Seasonal Water Yield model, including a scenario run in which all forest plantation pixels are replaced by savanna formation.</li>
+        <li>Developed the threshold-map and zonal-statistics analysis in QGIS and the evaluation and figures in R.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="methods">
+    <h2>Methods and tools</h2>
+    <div class="body">
+      <ul class="tags">
+        <li>InVEST SWY 3.19.0</li>
+        <li>QGIS 3.36.3</li>
+        <li>R: dplyr, tidyr, ggplot2, terra</li>
+        <li>Google Earth Engine</li>
+        <li>MapBiomas Collection 10</li>
+        <li>CHIRPS, CGIAR, TOPODATA</li>
+      </ul>
+      <p>The SWY model combines a curve number approach with a spatially explicit water balance and flow routing. Local recharge is the annual balance of precipitation, quickflow and actual evapotranspiration. Because the model was not calibrated, outputs are interpreted as relative spatial indices, not absolute streamflow.</p>
+    </div>
+  </section>
+
+  <section id="workflow">
+    <h2>Workflow</h2>
+    <div class="body">
+      <ol class="steps">
+        <li><b>Prepare inputs</b>Land cover (MapBiomas, 30 m), soil hydrological groups (UFV), DEM (TOPODATA), monthly precipitation and evapotranspiration (GEE), biophysical table with Kc and curve numbers.</li>
+        <li><b>Run the SWY model</b>D8 flow direction, flow accumulation threshold 2500, α = 1/12, β = 1, γ = 0.7. Parameters follow earlier studies in the same basin.</li>
+        <li><b>Classify outputs in QGIS</b>Threshold rasters for local recharge, baseflow and actual evapotranspiration. Streams, urban areas and water bodies are masked out.</li>
+        <li><b>Zonal statistics</b>Pixel counts per land-use class and threshold raster.</li>
+        <li><b>Evaluate in R</b>Cumulative counts become non-overlapping value ranges, expressed as the share of each land-use class and compared with the whole study area.</li>
+        <li><b>Scenario run</b>Forest plantation replaced by savanna formation; difference raster of local recharge.</li>
+      </ol>
+      <p>Threshold rasters were created with the QGIS raster calculator:</p>
+<pre><code>if("output@1" &lt; THRESHOLD, 1, -9999)</code></pre>
+      <p>Scripts: <a href="code/MODIS_2024_Rio_Pardo_GEE.js">Google Earth Engine</a>, <a href="code/GIS_Berechnungen.R">GIS calculations (R)</a>, <a href="code/Grafiken.R">figures (R)</a>.</p>
+    </div>
+  </section>
+
+  <section id="results">
+    <h2>Results</h2>
+    <div class="body">
+      <p>Forest plantation is overrepresented in the classes of low local recharge and low baseflow and in the classes of high actual evapotranspiration. Savanna formation, the dominant class, follows the catchment-wide distribution. Pasture shows the highest recharge and baseflow, which may partly reflect its lower evapotranspiration.</p>
+
+      <div class="tbl">
+        <table>
+          <caption>Share of each land-use class (% of its pixels) in one extreme value range per variable.</caption>
+          <thead><tr><th>Land use</th><th>Recharge 0–200 mm/yr</th><th>Baseflow &lt; 100 mm/yr</th><th>AET &gt; 1000 mm/yr</th></tr></thead>
+          <tbody>
+            <tr><td>Savanna formation</td><td>45</td><td>22</td><td>8</td></tr>
+            <tr><td>Pasture</td><td>3</td><td>1</td><td>1</td></tr>
+            <tr class="fp"><td>Forest plantation</td><td>52</td><td>37</td><td>34</td></tr>
+            <tr><td>Mosaic of uses</td><td>27</td><td>4</td><td>2</td></tr>
+            <tr><td>Entire study area</td><td>38</td><td>20</td><td>10</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="figs">
+        <figure class="wide">
+          <img src="../../assets/images/master-thesis/L_within_class_stacked.jpg" alt="Stacked bars of local recharge classes per land-use class" loading="lazy">
+          <figcaption>Local recharge classes within each land-use class. The right-most bar is the whole study area.</figcaption>
+        </figure>
+        <figure>
+          <img src="../../assets/images/master-thesis/L_threshold_map_Vred.png" alt="Map of local recharge classes in the Rio Pardo watershed" loading="lazy">
+          <figcaption>Local recharge threshold map.</figcaption>
+        </figure>
+        <figure>
+          <img src="../../assets/images/master-thesis/landuse_timeseries_bar.jpg" alt="Land use time series 1985 to 2024" loading="lazy">
+          <figcaption>Land use 1985–2024 (MapBiomas Collection 10).</figcaption>
+        </figure>
+        <figure>
+          <img src="../../assets/images/master-thesis/B_within_class_stacked.jpg" alt="Stacked bars of baseflow classes per land-use class" loading="lazy">
+          <figcaption>Baseflow classes per land-use class.</figcaption>
+        </figure>
+        <figure>
+          <img src="../../assets/images/master-thesis/AET_within_class_stacked.jpg" alt="Stacked bars of actual evapotranspiration classes per land-use class" loading="lazy">
+          <figcaption>Actual evapotranspiration classes per land-use class.</figcaption>
+        </figure>
+      </div>
+
+      <p>In the scenario run, replacing all forest plantation pixels with savanna formation raised modelled local recharge by 110 ± 67 mm/yr on average (median 106 mm/yr).</p>
+      <p>Limitations: the model was not calibrated, only four stream gauges exist in the catchment, and the analysis covers a single, unusually wet year. The results show where plantations coincide with low modelled water availability, not absolute recharge.</p>
+    </div>
+  </section>
+
+  <section id="skills">
+    <h2>Skills demonstrated</h2>
+    <div class="body">
+      <dl class="skills">
+        <div><dt>Hydrological modelling</dt><dd>Setup, parameterisation and scenario analysis with InVEST Seasonal Water Yield</dd></div>
+        <div><dt>Raster analysis</dt><dd>Threshold mapping, masking and zonal statistics in QGIS</dd></div>
+        <div><dt>Remote sensing data</dt><dd>Climate and land-cover data from Google Earth Engine and MapBiomas</dd></div>
+        <div><dt>Data analysis in R</dt><dd>Reproducible processing and figures with dplyr, tidyr, ggplot2 and terra</dd></div>
+        <div><dt>Uncertainty and limits</dt><dd>Interpreting uncalibrated model output as relative spatial indices</dd></div>
+        <div><dt>Interdisciplinary work</dt><dd>Contribution to an international research project in Brazil</dd></div>
+      </dl>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">Data: MapBiomas, CHIRPS, CGIAR, TOPODATA, UFV. Figures and analysis by the author.</div>
+</footer>
+
+</body>
+</html>
