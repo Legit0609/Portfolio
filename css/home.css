@@ -36,3 +36,10 @@ a.card:hover { border-color: var(--blue); }
   .about dd { margin-bottom: .6rem; }
   .cover { min-height: 62vh; }
 }
+
+/* Erfahrung */
+.exp { margin: 0 0 1.5rem; display: grid; grid-template-columns: 10rem 1fr; gap: 0 1.5rem; max-width: 68ch; }
+.exp dt { color: var(--muted); font-size: .95rem; padding-top: .1rem; }
+.exp dd { margin: 0 0 1.2rem; }
+.exp b { display: block; font-weight: 600; }
+@media (max-width: 820px) { .exp { grid-template-columns: 1fr; } .exp dd { margin-bottom: 1rem; } }
